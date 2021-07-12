@@ -1,5 +1,4 @@
 k = 2;
-
 let root;
 class Node {
     constructor (point , axis ){
@@ -64,7 +63,7 @@ function range_query_circle (node , center , radio , queue , depth = 0) {
         return ;
 
     var axis = depth % k;
-    console.log('node: ' + node.point + 'center '+center.point + ' distancia ' +  distanceSquared(node.point, center.point));
+    // console.log('node: ' + node.point + 'center '+center.point + ' distancia ' +  distanceSquared(node.point, center.point));
     if (distanceSquared(node.point, center.point) <= radio){ 
         //si la distancia entre los puntos es menor se encuentra dentro del circulo 
         queue.push(node.point);

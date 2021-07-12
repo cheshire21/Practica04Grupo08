@@ -2,6 +2,7 @@ var tree;
 var center;
 var data = [];
 
+//funcion que obtiene genera puntos 
 function randomdata(){
     for ( let i = 0; i < 12; i ++) {
         var x = Math.floor ( Math.random () * height );
@@ -31,14 +32,14 @@ function graficar(){
     }
 }
 function setup () {
-    var width = 200;
+    var width = 300;
     var height = 200;
     createCanvas (width , height ) ;
 
     background (0) ;
     
     randomdata();
-    console.log(data)
+    // console.log(data)
     graficar();
 
     tree = build_kdtree ( data ) ;
@@ -56,11 +57,15 @@ function draw(){
      //center 
      var center = new Node([x,height-y],k);
      queue = []
- 
+    
+     //obtiene todos los puntos que se intersectan 
      range_query_circle(tree,center,radio,queue);
+     //resalta los puntos que se intersectan
      for(var i = 0; i < queue.length; i++){
         fill (0 , 255 , 0) ;
         circle (queue[i][0], height - queue[i][1], 3) ;
+        textSize (5) ;
+        text (queue[i][0] + ',' + queue[i][1], queue[i][0] + 5, height - queue[i][1]);
      }
  
      
