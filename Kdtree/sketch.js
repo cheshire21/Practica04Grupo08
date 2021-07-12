@@ -1,9 +1,16 @@
-function setup () {
-    var width = 200;
-    var height = 200;
-    createCanvas (width , height ) ;
+var tree;
+var center;
+var data = [];
 
-    background (0) ;
+function randomdata(){
+    for ( let i = 0; i < 12; i ++) {
+        var x = Math.floor ( Math.random () * height );
+        var y = Math.floor ( Math.random () * height );
+        data.push ([x, y]) ;        
+    }
+}
+function graficar(){
+    // grafica las lineas del plano cartesiano
     for (var x = 0; x < width; x += width / 10) {
         for (var y = 0; y < height; y += height / 5) {
             stroke (125 , 125 , 125) ;
@@ -12,40 +19,53 @@ function setup () {
             line (0 , y, width , y);
         }
     }
-    var data = [];
+    // grafica los puntos del array data
     for ( let i = 0; i < 12; i ++) {
-        var x = Math.floor ( Math.random () * height );
-        var y = Math.floor ( Math.random () * height );
-        data.push ([x, y]) ;
-        
         fill (255 , 255 , 255) ;
-        circle (x, height - y, 3) ; // 200 -y para q se dibuje apropiadamente
-        textSize (8) ;
-        text (x + ',' + y, x + 5, height - y);// 200 -y para q se dibuje
-        
-        
+        circle (data[i][0], height - data[i][1], 3) ; // 200 -y para q se dibuje apropiadamente
+        // circle (x, height - y, 3) ; 
+        textSize (5) ;
+        text (data[i][0] + ',' + data[i][1], data[i][0] + 5, height - data[i][1]);// 200 -y para q se dibuje
+        // text (x + ',' + y, x + 5, height - y);
         
     }
+}
+function setup () {
+    var width = 200;
+    var height = 200;
+    createCanvas (width , height ) ;
 
-
-    var root = build_kdtree ( data ) ;
-    console.log ( root );
-
-    // 
-    var radio = 70;
-    var x = Math.random()*width;
-    var y = Math.random()*height;
-    //center 
-    var center = new Node([x,y],k);
-    queue = []
-
-    range_query_circle(root,center,radio,queue);
-    console.log(distanceSquared(root.point,center.point))
-    console.log(queue);
-
+    background (0) ;
     
-    stroke (0 ,255 ,0) ;
-    strokeWeight(2);
-    noFill()
-    circle ( x, height-y,radio ,radio)
+    randomdata();
+    console.log(data)
+    graficar();
+
+    tree = build_kdtree ( data ) ;
+    console.log ( tree );
+}
+   
+function draw(){
+    background(0);
+    graficar();
+
+     // 
+     var radio = 30;
+     var x = mouseX;
+     var y = mouseY;;
+     //center 
+     var center = new Node([x,height-y],k);
+     queue = []
+ 
+     range_query_circle(tree,center,radio,queue);
+     for(var i = 0; i < queue.length; i++){
+        fill (0 , 255 , 0) ;
+        circle (queue[i][0], height - queue[i][1], 3) ;
+     }
+ 
+     
+     stroke (0 ,255 ,0) ;
+     strokeWeight(2);
+     noFill()
+     circle ( mouseX, mouseY,radio ,radio)
 }
