@@ -53,32 +53,6 @@ function setup () {
 
     tree = build_kdtree ( data ) ;
     console.log ( tree );
-
-    var size = [100,100];
-    var x = 0;
-    var y = 0;
-    //center 
-    var center = new Node([x,y],k);
-    queue = []
-
-    //obtiene todos los puntos que se intersectan 
-    range_query_rec(tree,center,size,queue);
-    //resalta los puntos que se intersectan
-    // console.log(queue);
-    for(var i = 0; i < queue.length; i++){
-        fill (0 , 255 , 0) ;
-        circle (queue[i][0], height - queue[i][1], 3) ;
-        textSize (5) ;
-        text (queue[i][0] + ',' + queue[i][1], queue[i][0] + 5, height - queue[i][1]);
-    }
-
-    
-    stroke (0 ,255 ,0) ;
-    strokeWeight(2);
-    noFill()
-
-    rectMode ( CENTER );
-    rect( x, height-y,size[0]*2 ,size[1]*2)
 }
 
 function draw(){
