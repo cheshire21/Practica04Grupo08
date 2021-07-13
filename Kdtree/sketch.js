@@ -1,10 +1,18 @@
 var tree;
 var center;
-var data = [];
-
+// var data = [
+//     [40,70] ,
+//     [70,130] ,
+//     [90,40] ,
+//     [110, 100] ,
+//     [140,110] ,
+//     [160, 100]
+// ];
+var data=[];
+var datalength = 15;
 //funcion que obtiene genera puntos 
 function randomdata(){
-    for ( let i = 0; i < 12; i ++) {
+    for ( let i = 0; i < datalength; i ++) {
         var x = Math.floor ( Math.random () * height );
         var y = Math.floor ( Math.random () * height );
         data.push ([x, y]) ;        
@@ -21,7 +29,7 @@ function graficar(){
         }
     }
     // grafica los puntos del array data
-    for ( let i = 0; i < 12; i ++) {
+    for ( let i = 0; i < datalength; i ++) {
         fill (255 , 255 , 255) ;
         circle (data[i][0], height - data[i][1], 3) ; // 200 -y para q se dibuje apropiadamente
         // circle (x, height - y, 3) ; 
@@ -31,6 +39,7 @@ function graficar(){
         
     }
 }
+
 function setup () {
     var width = 300;
     var height = 200;
@@ -44,8 +53,37 @@ function setup () {
 
     tree = build_kdtree ( data ) ;
     console.log ( tree );
+
+    //
+
+    // 
+    var size = [100,100];
+    var x = 0;
+    var y = 0;
+    //center 
+    var center = new Node([x,y],k);
+    queue = []
+
+    //obtiene todos los puntos que se intersectan 
+    range_query_rec(tree,center,size,queue);
+    //resalta los puntos que se intersectan
+    // console.log(queue);
+    for(var i = 0; i < queue.length; i++){
+        fill (0 , 255 , 0) ;
+        circle (queue[i][0], height - queue[i][1], 3) ;
+        textSize (5) ;
+        text (queue[i][0] + ',' + queue[i][1], queue[i][0] + 5, height - queue[i][1]);
+    }
+
+    
+    stroke (0 ,255 ,0) ;
+    strokeWeight(2);
+    noFill()
+
+    rectMode ( CENTER );
+    rect( x, height-y,size[0]*2 ,size[1]*2)
 }
-   
+
 function draw(){
     background(0);
     graficar();
@@ -55,7 +93,7 @@ function draw(){
      var x = mouseX;
      var y = mouseY;;
      //center 
-     var center = new Node([x,height-y],k);
+     var center = [x,height-y];
      queue = []
     
      //obtiene todos los puntos que se intersectan 
@@ -74,3 +112,33 @@ function draw(){
      noFill()
      circle ( mouseX, mouseY,radio ,radio)
 }
+// resalta los puntos que se encuentran dentro del cuadra
+// function draw(){
+//     background(0);
+//     graficar();
+//      // 
+//      var size = [30,30];
+//      var x = mouseX;
+//      var y = mouseY;
+//      //center 
+//      var center = [x,height-y];
+//      queue = []
+    
+//      //obtiene todos los puntos que se intersectan 
+//      range_query_rec(tree,center,size,queue);
+//      //resalta los puntos que se intersectan
+//      for(var i = 0; i < queue.length; i++){
+//         fill (0 , 255 , 0) ;
+//         circle (queue[i][0], height - queue[i][1], 3) ;
+//         textSize (5) ;
+//         text (queue[i][0] + ',' + queue[i][1], queue[i][0] + 5, height - queue[i][1]);
+//      }
+ 
+     
+//     stroke (0 ,255 ,0) ;
+//     strokeWeight(2);
+//     noFill()
+
+//     rectMode ( CENTER );
+//     rect ( mouseX, mouseY,size[0]*2 ,size[1]*2)
+// }
