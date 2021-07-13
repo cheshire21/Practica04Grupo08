@@ -54,9 +54,6 @@ function setup () {
     tree = build_kdtree ( data ) ;
     console.log ( tree );
 
-    //
-
-    // 
     var size = [100,100];
     var x = 0;
     var y = 0;

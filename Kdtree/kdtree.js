@@ -123,6 +123,7 @@ function closest_point (node , point , depth = 0) {
 
 function KNN (node , point, k, depth = 0) {
     //metodo que devuelve los k puntos mas cercanos 
+    
 }
 
 function getHeight(node) {
