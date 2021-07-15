@@ -115,16 +115,103 @@ function range_query_circle (node , center , radio , queue , depth = 0) {
         range_query_circle(next_branch, center, radio, queue, depth +1);
     }
 }
-function closest_point (node , point , depth = 0) {
-    //metodo que devuelve el punto mas cercano  search 
+function closest_point(node, point,radio = null, depth = 0, best = null){
+    // console.log(radio)
+    if (node === null)
+        return best;
 
+    var axis = depth % k;
+    var next_best = null; //next best point
+    var next_radio = null; //next best point
+    var next_branch = null; //next node brach to look for
+
+    if (best === null || (distanceSquared(best, point) > distanceSquared(node.point, point))){
+        next_best = node.point;
+        next_radio = distanceSquared(next_best, point);
+    }
+    else{
+        next_best   = best;
+    }
+    // console.log('mejor actual: '+ next_best);
+    // console.log('distancia axis:'+axis + ':  point' +point+' '+ distanceSquared(node.point, point) + ' radio: ' + radio);
+    if (distanceSquared(node.point, point) <= radio){ 
+        // si choca el radio con el punto en el eje actual se tiene que buscar en los dos hijos  
+        var op_A = closest_point(node.left, point, next_radio, depth +1,next_best);
+        var op_B = closest_point(node.right, point, next_radio, depth +1,next_best);
+        // console.log('actual'+node.point+'A: '+ op_A);
+        // console.log('actual'+node.point+'B: '+ op_B);
+        if(distanceSquared(op_A, point) < distanceSquared(op_B,point)){
+            return op_A;
+        }
+        return op_B;
+    }
+    else{// de lo contrario va por un de sus hijos 
+        if (point[axis] < node.point[axis])
+            next_branch = node.left
+        else
+            next_branch = node.right
+        
+        return closest_point(next_branch, point, next_radio, depth +1,next_best);
+    }
 }
+function KNN(root, point,kneirbors){
+    var knodes;
+    function recursive_KNN(node, depth = 0){
+        // console.log(radio)
+        if (node === null)
+            return true;
+    
+        var axis = depth % k;
+        var next_branch = null; //next node brach to look for
+        
+        if(knodes === undefined){
+            knodes = new BinaryHeap(
+                function (e) { return -e[1]; }
+            );
+            knodes.push([node, distanceSquared(node.point, point)])
+            
+        
+        }
+        console.log('  node: ' +node.point);
+        console.log('distancia axis:'+axis + '  point: ' +point+' distancia: '+
+        node.point   + ' radio: ' + knodes.peek()[1]);
+        var distance =  distanceSquared(node.point, point);
+        if (knodes.peek()[1] > distance){
+            knodes.push([node, distance]);
+            if (knodes.size() >= kneirbors) {
+                knodes.pop();
+            }
+        }
+        console.log(Math.abs((node.point[axis] - point[axis])));
+        
+        if (Math.abs((node.point[axis] - point[axis])) < knodes.peek()[1] && distanceSquared(node.point, point) <= knodes.peek()[1]){ 
+            // si choca el radio con el punto en el eje actual se tiene que buscar en los dos hijos  
+            return recursive_KNN(node.left, depth +1) & recursive_KNN(node.right, depth +1);
+            
+        }
+        else{// de lo contrario va por un de sus hijos 
+            if (point[axis] < node.point[axis])
+                next_branch = node.left
+            else
+                next_branch = node.right
+            
+            return recursive_KNN(next_branch, depth +1);
+        }
+    }
+    
+    recursive_KNN(root);
 
+    result = [];
 
-function KNN (node , point, k, depth = 0) {
-    //metodo que devuelve los k puntos mas cercanos 
+    for (i = 0; i < Math.min(kneirbors, knodes.content.length); i += 1) {
+    if (knodes.content[i][0]) {
+        result.push([knodes.content[i][0], knodes.content[i][1]]);
+    }
+    }
+    return result;
     
 }
+
 
 function getHeight(node) {
     if (node === null){

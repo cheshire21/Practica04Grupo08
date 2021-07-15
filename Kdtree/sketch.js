@@ -6,10 +6,11 @@ var center;
 //     [90,40] ,
 //     [110, 100] ,
 //     [140,110] ,
-//     [160, 100]
+//     [160, 100],
+//     [150 , 30]
 // ];
 var data=[];
-var datalength = 15;
+var datalength = 10;
 //funcion que obtiene genera puntos 
 function randomdata(){
     for ( let i = 0; i < datalength; i ++) {
@@ -46,43 +47,60 @@ function setup () {
     createCanvas (width , height ) ;
 
     background (0) ;
-    
+
     randomdata();
     // console.log(data)
     graficar();
 
     tree = build_kdtree ( data ) ;
+    // busqueda del numero mas cercano 
+    var point = [140 ,90];
+    fill (0 , 255 ,255) ;
+    circle (point[0], height - point[1], 3) ; 
+
+    textSize (5) ;
+    text (point[0] + ',' + point[1], point[0] + 5, height - point[1]);
+
     console.log ( tree );
+
+    var cl_point = naive_closest_point(tree,point);
+    console.log( 'naive: '+ cl_point);
+
+    cl_point = closest_point(tree,point);
+    console.log( 'usando radio: '+ cl_point);
+
+    //function KNN
+    console.log(KNN(tree, point, 5 ));
 }
 
-function draw(){
-    background(0);
-    graficar();
+// function draw(){
+//     background(0);
+//     graficar();
 
-     // 
-     var radio = 30;
-     var x = mouseX;
-     var y = mouseY;;
-     //center 
-     var center = [x,height-y];
-     queue = []
+//      // 
+//      var radio = 30;
+//      var x = mouseX;
+//      var y = mouseY;;
+//      //center 
+//      var center = [x,height-y];
+//      queue = []
     
-     //obtiene todos los puntos que se intersectan 
-     range_query_circle(tree,center,radio,queue);
-     //resalta los puntos que se intersectan
-     for(var i = 0; i < queue.length; i++){
-        fill (0 , 255 , 0) ;
-        circle (queue[i][0], height - queue[i][1], 3) ;
-        textSize (5) ;
-        text (queue[i][0] + ',' + queue[i][1], queue[i][0] + 5, height - queue[i][1]);
-     }
+//      //obtiene todos los puntos que se intersectan 
+//      range_query_circle(tree,center,radio,queue);
+//      //resalta los puntos que se intersectan
+//      for(var i = 0; i < queue.length; i++){
+//         fill (0 , 255 , 0) ;
+//         circle (queue[i][0], height - queue[i][1], 3) ;
+//         textSize (5) ;
+//         text (queue[i][0] + ',' + queue[i][1], queue[i][0] + 5, height - queue[i][1]);
+//      }
  
      
-     stroke (0 ,255 ,0) ;
-     strokeWeight(2);
-     noFill()
-     circle ( mouseX, mouseY,radio ,radio)
-}
+//      stroke (0 ,255 ,0) ;
+//      strokeWeight(2);
+//      noFill()
+//      circle ( mouseX, mouseY,radio ,radio)
+// }
 // resalta los puntos que se encuentran dentro del cuadra
 // function draw(){
 //     background(0);
