@@ -35,6 +35,7 @@ class KNNClassifier(object):
 
         return pred_y
 
+
 def main():
     #lee el archivo
     # data_prueba = pd.read_csv('./test/Iris.csv')
@@ -60,3 +61,17 @@ def main():
 
     KnnCla = KNNClassifier(3)
     KnnCla.fit(Xtrain,Ytrain)
+
+    pred_y = KnnCla.predict(Xtest)
+    pred_y = np.array(pred_y)
+    # print(pred_y)
+    # print(Ytest)
+
+    cnf_matrix = metrics.confusion_matrix(Ytest,pred_y)
+    print(cnf_matrix)
+    dataframe = pd.DataFrame(cnf_matrix)
+
+    sns.heatmap(dataframe, annot=True, cbar=None, cmap="Blues")
+    plt.title("Confusion Matrix"), plt.tight_layout()
+    plt.ylabel("True Class"), plt.xlabel("Predicted Class")
+    plt.show()
