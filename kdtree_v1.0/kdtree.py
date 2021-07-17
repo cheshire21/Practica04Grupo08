@@ -1,7 +1,6 @@
 import pandas as pd
 import argparse
 import copy
-import utils
 import numpy as np
 from node import Node
 from bisect import bisect
@@ -9,21 +8,16 @@ import math
 
 class KDTree(object):
   """Construct a kd tree"""
-  def __init__(self, file_path):
+  def __init__(self, data):
     """
       Args:
         file_path: a path to a text file that stores points 
     """
-    self.pc_path = file_path
+    # self.pc_path = file_path
     self.dim = 3
 
 
-    self.points = np.array([[40,70,0],[70,130,0],[90,40,0],
-              [110,100,0],
-              [140,110,0],
-              [160,100,0],
-              [150,30,0]
-              ])
+    self.points = data
 
     self.root = self.build_kdtree_mejorado(self.points, 0)
 
@@ -136,7 +130,10 @@ class KDTree(object):
 
 
 def main():
-  
+  data_prueba = np.loadtxt('./test/2dpt.txt', delimiter=",")
+  df=pd.DataFrame(data_prueba)
+  # print(df.to_numpy())
+
   tree = KDTree(df.to_numpy())
 
   nn,_ = tree.nearest_neighbor((7.0, 6.0, 1.0), tree.root, 0)
@@ -153,8 +150,5 @@ def main():
     print(node.get_position())
 
 
-if __name__ == "__main__":
-  data_prueba = np.loadtxt('./test/2dpt.txt', delimiter=",")
-  df=pd.DataFrame(data_prueba)
-  print(df.to_numpy())
-  main()
+
+main()

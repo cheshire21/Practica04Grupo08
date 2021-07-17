@@ -1,15 +1,15 @@
 var tree;
 var center;
-// var data = [
-//     [40,70] ,
-//     [70,130] ,
-//     [90,40] ,
-//     [110, 100] ,
-//     [140,110] ,
-//     [160, 100],
-//     [150 , 30]
-// ];
-var data=[];
+var data = [
+    [40,70] ,
+    [70,130] ,
+    [90,40] ,
+    [110, 100] ,
+    [140,110] ,
+    [160, 100],
+    [150 , 30]
+];
+// var data=[];
 var datalength = 10;
 //funcion que obtiene genera puntos 
 function randomdata(){
@@ -70,7 +70,7 @@ function setup () {
     console.log( 'usando radio: '+ cl_point);
 
     //function KNN
-    console.log(KNN(tree, point, 5 ));
+    console.log(KNN(tree, point, 3 ));
 }
 
 // function draw(){

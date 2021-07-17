@@ -156,6 +156,7 @@ function closest_point(node, point,radio = null, depth = 0, best = null){
 }
 function KNN(root, point,kneirbors){
     var knodes;
+    kneirbors = kneirbors + 1;
     function recursive_KNN(node, depth = 0){
         // console.log(radio)
         if (node === null)
