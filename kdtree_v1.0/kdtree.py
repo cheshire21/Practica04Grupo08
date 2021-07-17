@@ -1,6 +1,4 @@
 import pandas as pd
-import argparse
-import copy
 import numpy as np
 from node import Node
 from bisect import bisect
@@ -8,70 +6,48 @@ import math
 
 class KDTree(object):
   """Construct a kd tree"""
-  def __init__(self, data):
+  def __init__(self, X_train, Y_train):
     """
       Args:
         file_path: a path to a text file that stores points 
     """
     # self.pc_path = file_path
-    self.dim = 3
+    self.dim = X_train.shape[1]
 
 
-    self.points = data
+    self.points = X_train
+    self.labels = Y_train
 
-    self.root = self.build_kdtree_mejorado(self.points, 0)
+    self.root = self.build_kdtree_mejorado(self.points,self.labels, 0)
 
-  def build_kdtree_mejorado(self,points, depth=0):
+  def build_kdtree_mejorado(self,points, labels, depth=0):
     n=len(points)
     axis=depth % self.dim
-    if(self.dim<=0):
+    if(n<=0):
       return None
     if(n==1):
-      return Node(points[0],axis)
+      return Node(points[0],labels[0],axis)
     median=math.floor(len(points)/2)
+    
     #points.sort(key=(lambda a,b: a[axis]-b[axis]))
-    print(points.shape)
+    # print(points.shape)
+    labels = labels[points[:, axis].argsort(kind='mergesort')]
     points = points[points[:, axis].argsort(kind='mergesort')]
     
     
-    left=points[0:median]
-    right=points[median+1:]
-    node=Node(points[median],axis)
-    node.left=self.build_kdtree_mejorado(left,depth+1)
-    node.right=self.build_kdtree_mejorado(right,depth+1)
+    points_left=points[0:median]
+    points_right=points[median+1:]
+
+    labels_left=labels[0:median]
+    labels_right=labels[median+1:]
+
+    node=Node(points[median],labels[median],axis)
+    node.left=self.build_kdtree_mejorado(points_left,labels_left,depth+1)
+    node.right=self.build_kdtree_mejorado(points_right,labels_right,depth+1)
+
     return node
-  def nearest_neighbor(self, query, curr_node, level):
-      
-    if curr_node.left is None and curr_node.right is None:
-      sqr_dis = np.sum((np.array(query) - curr_node.get_position()) ** 2)
-      return [curr_node], sqr_dis
 
-  
-    curr_best_nodes = [curr_node] 
-    curr_best_sqr_dis = np.sum((np.array(query) - np.array(curr_node.get_position())) ** 2)
-
-    if curr_node.left is not None:
-      best_left_children, best_left_sqr_dis = self.nearest_neighbor(query, curr_node.left, (level+1)%self.dim)
-      if best_left_sqr_dis < curr_best_sqr_dis:
-        curr_best_nodes = best_left_children
-        curr_best_sqr_dis = best_left_sqr_dis
-      elif best_left_sqr_dis == curr_best_sqr_dis:
-        curr_best_nodes += best_left_children
-
-    if curr_node.right is not None:
-
-      axis_sqr_dis = (query[level] - curr_node.get_position()[level]) ** 2
-      if axis_sqr_dis < curr_best_sqr_dis:
-        best_right_children, best_right_sqr_dis = self.nearest_neighbor(query, curr_node.right, (level+1)%self.dim)
-        if best_right_sqr_dis < curr_best_sqr_dis:
-          curr_best_nodes = best_right_children
-          curr_best_sqr_dis = best_right_sqr_dis
-        elif best_right_sqr_dis == curr_best_sqr_dis:
-          curr_best_nodes += best_right_children
-
-    return curr_best_nodes, curr_best_sqr_dis
-
-  def k_nearest_neighbors(self, query, curr_node, k, level):
+  def KNN(self, query, curr_node, k, level):
     if curr_node.left is None and curr_node.right is None:
       sqr_dis = np.sum((np.array(query) - np.array(curr_node.get_position())) ** 2)
       return [curr_node], [sqr_dis]
@@ -79,7 +55,7 @@ class KDTree(object):
     curr_best_sqr_dis = [np.sum((np.array(query) - np.array(curr_node.get_position())) ** 2)]
     if curr_node.left is not None:
       
-      best_left_children, best_left_sqr_dis = self.k_nearest_neighbors(query, curr_node.left, k, (level+1)%self.dim)
+      best_left_children, best_left_sqr_dis = self.KNN(query, curr_node.left, k, (level+1)%self.dim)
 
       if len(best_left_children) < k or curr_best_sqr_dis[0] < best_left_sqr_dis[-1]:
         idx = bisect(best_left_sqr_dis, curr_best_sqr_dis[0])
@@ -95,7 +71,7 @@ class KDTree(object):
 
       if len(curr_best_nodes) < k or curr_best_sqr_dis[-1] > axis_sqr_dis:
        
-        best_right_children, best_right_sqr_dis = self.k_nearest_neighbors(query, curr_node.right, k, (level+1)%self.dim)
+        best_right_children, best_right_sqr_dis = self.KNN(query, curr_node.right, k, (level+1)%self.dim)
    
         tmp_dis = []
         tmp_nodes = []
@@ -126,29 +102,3 @@ class KDTree(object):
         curr_best_sqr_dis = tmp_dis
 
     return curr_best_nodes, curr_best_sqr_dis
-
-
-
-def main():
-  data_prueba = np.loadtxt('./test/2dpt.txt', delimiter=",")
-  df=pd.DataFrame(data_prueba)
-  # print(df.to_numpy())
-
-  tree = KDTree(df.to_numpy())
-
-  nn,_ = tree.nearest_neighbor((7.0, 6.0, 1.0), tree.root, 0)
-  print ('The cloest neighbor for query point (7.0, 6.0, 1.0):')
-  for node in nn:
-    print(node.get_position())
-
-  print ('\n')
-
-  k =3
-  print ('The %d nearest neighbors for query point (8.0, 3.0, 1.0):' % k)
-  nn, _ = tree.k_nearest_neighbors((8.0,3.0, 1.0), tree.root, k, 0)
-  for node in nn:
-    print(node.get_position())
-
-
-
-main()
