@@ -64,14 +64,17 @@ def main():
 
     pred_y = KnnCla.predict(Xtest)
     pred_y = np.array(pred_y)
-    # print(pred_y)
+    
     # print(Ytest)
 
     cnf_matrix = metrics.confusion_matrix(Ytest,pred_y)
-    print(cnf_matrix)
-    dataframe = pd.DataFrame(cnf_matrix)
+    class_names = ["setosa","versicolor","virginica"]
+    dataframe = pd.DataFrame(cnf_matrix,index=class_names, columns=class_names)
 
     sns.heatmap(dataframe, annot=True, cbar=None, cmap="Blues")
     plt.title("Confusion Matrix"), plt.tight_layout()
     plt.ylabel("True Class"), plt.xlabel("Predicted Class")
     plt.show()
+    print(pred_y)
+
+main()
