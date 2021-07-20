@@ -5,12 +5,7 @@ from bisect import bisect
 import math
 
 class KDTree(object):
-  """Construct a kd tree"""
   def __init__(self, X_train, Y_train):
-    """
-      Args:
-        file_path: a path to a text file that stores points 
-    """
     # self.pc_path = file_path
     self.dim = X_train.shape[1]
 

@@ -173,9 +173,8 @@ function KNN(root, point,kneirbors){
             
         
         }
-        console.log('  node: ' +node.point);
-        console.log('distancia axis:'+axis + '  point: ' +point+' distancia: '+
-        node.point   + ' radio: ' + knodes.peek()[1]);
+        // console.log('  node: ' +node.point);
+        // console.log('distancia axis:'+axis + '  point: ' +point+' distancia: '+ node.point   + ' radio: ' + knodes.peek()[1]);
         var distance =  distanceSquared(node.point, point);
         if (knodes.peek()[1] > distance){
             knodes.push([node, distance]);
@@ -183,7 +182,7 @@ function KNN(root, point,kneirbors){
                 knodes.pop();
             }
         }
-        console.log(Math.abs((node.point[axis] - point[axis])));
+        // console.log(Math.abs((node.point[axis] - point[axis])));
         
         if (Math.abs((node.point[axis] - point[axis])) < knodes.peek()[1] && distanceSquared(node.point, point) <= knodes.peek()[1]){ 
             // si choca el radio con el punto en el eje actual se tiene que buscar en los dos hijos  

@@ -10,7 +10,7 @@ var data = [
     [150 , 30]
 ];
 // var data=[];
-var datalength = 10;
+var datalength = 7;
 //funcion que obtiene genera puntos 
 function randomdata(){
     for ( let i = 0; i < datalength; i ++) {
@@ -48,7 +48,7 @@ function setup () {
 
     background (0) ;
 
-    randomdata();
+    // randomdata();
     // console.log(data)
     graficar();
 
@@ -64,10 +64,10 @@ function setup () {
     console.log ( tree );
 
     var cl_point = naive_closest_point(tree,point);
-    console.log( 'naive: '+ cl_point);
+    console.log( 'usando naive_closest_point: '+ cl_point);
 
     cl_point = closest_point(tree,point);
-    console.log( 'usando radio: '+ cl_point);
+    console.log( 'usando closest_point con radio: '+ cl_point);
 
     //function KNN
     console.log(KNN(tree, point, 3 ));
